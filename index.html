@@ -27,9 +27,9 @@
             -webkit-appearance: none;
             /* Override default CSS styles */
             appearance: none;
-            width: 18rem;
+            width: 15.5rem;
             background: #dadada;
-            height: 0.6rem;
+            height: 0.5rem;
             /* Grey background */
             outline: none;
             /* Remove outline */
@@ -40,7 +40,11 @@
             transition: opacity .2s;
             border-radius: 10px;
             box-shadow: 1px 1px 5px #888888;
+
+
         }
+
+
 
         .slider::-webkit-slider-thumb {
             -webkit-appearance: none;
@@ -50,12 +54,14 @@
             /* Set a specific slider handle width */
             height: 30px;
             /* Slider handle height */
-            background: linear-gradient(90deg, rgba(193, 86, 253, 1) 0%, rgba(254, 58, 235, 1) 100%);
+            background: linear-gradient(90deg, #c653fb 0%, #f63eed 100%);
             /* Green background */
             cursor: pointer;
             border-radius: 100%;
             /* Cursor on hover */
             position: relative;
+
+
         }
 
         .input-wrapper {
@@ -66,14 +72,20 @@
 
         .slider-output {
             position: absolute;
-            width: 10rem;
+            width: 8.9rem;
             height: 2rem;
             background: linear-gradient(white, white) padding-box,
                 linear-gradient(to bottom, #c156fd, #fe3aeb) border-box;
             border-radius: 6px;
             border: 2px solid transparent;
-            top: -80px;
-            
+            top: -60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #787878;
+            left: -3.5rem;
+            font-size: 14px;
         }
 
         .slider-output::before {
@@ -91,6 +103,7 @@
             clip-path: polygon(100% 0, 0 0, 50% 48%);
             background: #fe3aeb;
         }
+
         .slider-output::after {
             content: '';
             display: block;
@@ -106,6 +119,49 @@
             clip-path: polygon(100% 0, 0 0, 50% 48%);
             background: white;
         }
+
+        .usd-wrapper-outer {
+            display: flex;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            width: 15rem;
+            height: 3.5rem;
+            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+            justify-content: center;
+            align-items: center;
+            margin-inline: auto;
+            margin-top: 2rem;
+            font-weight: 900;
+        }
+
+        .usd-wrapper-inner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .usd {
+            color: #404040;
+            font-size: 22px;
+        }
+
+        .month {
+            color: #7a7a7a;
+        }
+
+        @media screen and (min-width: 600px) {
+            .slider {
+                width: 24rem;
+            }
+
+            .usd {
+                font-size: 26px;
+            }
+
+            .usd-wrapper-outer {
+                width: 17rem;
+            }
+
+        }
     </style>
 </head>
 
@@ -113,15 +169,53 @@
     <div class="wrapper">
         <div class="input-wrapper">
             <input type="range" min="100" max="1000000" value="100" class="slider" id="slider">
-            <div class="slider-output">
+            <div class="slider-output" id="sliderOutput">
+                <p id="slider-text">
+                    100 Followers
+                </p>
+            </div>
+
+            <div class="usd-wrapper-outer">
+                <div class="usd-wrapper-inner">
+                    <p class="usd" id="usd">$40</p>
+                    <p class="month">/month</p>
+                </div>
 
             </div>
         </div>
-
-        <script>
-            var slider = document.getElementById("slider")
-        </script>
     </div>
+
+    <script>
+
+        var range = document.getElementById("slider")
+        var bubble = document.getElementById("sliderOutput")
+        var usd = document.getElementById("usd")
+
+        range.addEventListener("input", () => {
+            setBubble(range, bubble);
+        });
+
+        // FUNCTION TO ADD COMMAS TO NUMBERS
+        function numberWithCommas(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        function setBubble(range, bubble) {
+            var followers = range.value;
+            var min = range.min ? range.min : 100;
+            var max = range.max ? range.max : 1000000;
+            var newVal = Number(((followers - min) * 100) / (max - min));
+
+            var monthly = Math.trunc(followers * 0.4 * 1) // MONTHLY VALUE
+            usd.innerHTML = `$ ${numberWithCommas(monthly)}` // CHANGING HTML VALUE
+            bubble.innerHTML = `${numberWithCommas(followers)} Followers` // CHANGING BUBBLE INDICATOR VALUE
+
+            // Sorta magic numbers based on size of the native UI thumb
+            bubble.style.left = `calc(${newVal}% + (${-56 - newVal * 0.33}px))`;
+        }
+
+
+    </script>
 </body>
 
 

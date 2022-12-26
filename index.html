@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slider</title>
+    <link rel="stylesheet" href="./style.css">
+    <style>
+        body,
+        html {
+            padding: 0;
+            margin: 0;
+
+        }
+
+        .wrapper {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            /* Override default CSS styles */
+            appearance: none;
+            width: 18rem;
+            background: #dadada;
+            height: 0.6rem;
+            /* Grey background */
+            outline: none;
+            /* Remove outline */
+            opacity: 0.7;
+            /* Set transparency (for mouse-over effects on hover) */
+            -webkit-transition: .2s;
+            /* 0.2 seconds transition on hover */
+            transition: opacity .2s;
+            border-radius: 10px;
+            box-shadow: 1px 1px 5px #888888;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            /* Override default look */
+            appearance: none;
+            width: 30px;
+            /* Set a specific slider handle width */
+            height: 30px;
+            /* Slider handle height */
+            background: linear-gradient(90deg, rgba(193, 86, 253, 1) 0%, rgba(254, 58, 235, 1) 100%);
+            /* Green background */
+            cursor: pointer;
+            border-radius: 100%;
+            /* Cursor on hover */
+            position: relative;
+        }
+
+        .input-wrapper {
+            position: relative;
+            width: auto;
+            height: auto;
+        }
+
+        .slider-output {
+            position: absolute;
+            width: 10rem;
+            height: 2rem;
+            background: linear-gradient(white, white) padding-box,
+                linear-gradient(to bottom, #c156fd, #fe3aeb) border-box;
+            border-radius: 6px;
+            border: 2px solid transparent;
+            top: -80px;
+            
+        }
+
+        .slider-output::before {
+            content: '';
+            display: block;
+            /* border: 2px solid #fe3aeb; */
+            background-color: black;
+            /* background-color: white; */
+            width: 1.5rem;
+            height: 1.8rem;
+            position: absolute;
+            margin-inline: auto;
+            left: 0;
+            right: 0;
+            bottom: -2rem;
+            clip-path: polygon(100% 0, 0 0, 50% 48%);
+
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="input-wrapper">
+            <input type="range" min="100" max="1000000" value="100" class="slider" id="slider">
+            <div class="slider-output">
+
+            </div>
+        </div>
+
+        <script>
+            var slider = document.getElementById("slider")
+        </script>
+    </div>
+</body>
+
+
+</html>

@@ -14,6 +14,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            flex-direction: column;
         }
 
         .slider {
@@ -121,30 +122,18 @@
             color: #7a7a7a;
         }
 
+        .follower-input {
+            outline: 0;
+            border: 0;
 
-        .minus,
-        .add {
-            position: absolute;
-            font-family: Verdana, Geneva, Tahoma, sans-serif;
-            border: 1px solid #7a7a7a;
-            width: 25px;
-            height: 25px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 4px;
-            top: -4px;
-            color: #7a7a7a;
-            user-select: none;
-            cursor: pointer;
-        }
-
-        .minus {
-            left: -37px;
-        }
-
-        .add {
-            right: -40px;
+            border-image: linear-gradient(to bottom, #c156fd, #fe3aeb) 1;
+            border-width: 2px;
+            border-style: solid;
+            height: 1.5rem;
+            padding: 5px 7px 5px 7px;
+            color: #424242;
+            margin-bottom: 5.5rem;
+            width: 10rem;
         }
 
         @media screen and (min-width: 600px) {
@@ -160,25 +149,18 @@
                 width: 17rem;
             }
 
-            .minus, .add {
-                display: none;
-            }
         }
     </style>
 </head>
 
 <body>
+
     <div class="wrapper">
+        <!-- MANUAL INPUT BOX FOR FOLLOWERS -->
+        <input type="number" class="follower-input" placeholder="Followers" required id="follower-input" min="100"
+            max="1000000" value="100">
+
         <div class="input-wrapper">
-
-            <!-- BUTTONS -->
-            <div class="minus" id="minus">
-                <p style="margin-top: 12.5px;">-</p>
-            </div>
-            <div class="add" id="add">
-                <p style="margin-top: 12.5px;">+</p>
-            </div>
-
             <!-- SLIDER FOR FOLLOWERS -->
             <input type="range" min="100" max="1000000" value="100" class="slider" id="slider">
             <div class="slider-output" id="sliderOutput">
@@ -193,8 +175,8 @@
                     <p class="usd" id="usd">$ 40</p>
                     <p class="month">/month</p>
                 </div>
-
             </div>
+
         </div>
     </div>
 
@@ -203,41 +185,36 @@
         var range = document.getElementById("slider")
         var bubble = document.getElementById("sliderOutput")
         var usd = document.getElementById("usd")
-        var add = document.getElementById("add")
-        var minus = document.getElementById("minus")
-
+        var followerInput = document.getElementById("follower-input")
 
 
         range.addEventListener("input", () => {
-            setBubble(range, bubble);
+            setBubble(range.value, bubble);
+            followerInput.value = range.value
         });
 
-        let value = 0;
-        let timer;
+        followerInput.addEventListener("input", () => {
+            console.log(followerInput.value);
 
-        // INCREMENT ON HOLD
-        function continuosIncerment() {
-            adjust(range, bubble, "add")
-            timer = setTimeout(continuosIncerment, 100);
-        }
+            // ADDING LIMITATIONS TO INPUT
+            if (followerInput.value <= 100) {
+                setBubble(100, bubble);
+                range.value = 100
+            } else if (followerInput.value >= 1000000) {
+                setBubble(1000000, bubble);
+                followerInput.value = 1000000
 
-        // DECREMENT ON HOLD
-        function continuosDecrement() {
-            adjust(range, bubble, "minus")
-            timer = setTimeout(continuosDecrement, 100);
-        }
+                range.value = 1000000
+            } else if (followerInput.value === '') {
+                setBubble(100, bubble);
+                range.value = followerInput.value
+            } else {
+                setBubble(followerInput.value, bubble);
+                range.value = followerInput.value
+            }
 
-        function timeoutClear() {
-            clearTimeout(timer);
-        }
+        })
 
-        add.addEventListener("touchstart", continuosIncerment);
-        add.addEventListener('touchend', timeoutClear);
-        add.addEventListener('touchcancel', timeoutClear);
-
-        minus.addEventListener("touchstart", continuosDecrement);
-        minus.addEventListener('touchend', timeoutClear);
-        minus.addEventListener('touchcancel', timeoutClear);
 
         // FUNCTION TO ADD COMMAS TO NUMBERS
         function numberWithCommas(x) {
@@ -245,28 +222,7 @@
         }
 
         function setBubble(range, bubble) {
-            var followers = range.value;
-            var min = range.min ? range.min : 100;
-            var max = range.max ? range.max : 1000000;
-            var newVal = Number(((followers - min) * 100) / (max - min));
-
-            var monthly = Math.trunc(followers * 0.4 * 1) // MONTHLY VALUE
-            usd.innerHTML = `$ ${numberWithCommas(monthly)}` // CHANGING HTML VALUE
-            bubble.innerHTML = `${numberWithCommas(followers)} Followers` // CHANGING BUBBLE INDICATOR VALUE
-
-            // Sorta magic numbers based on size of the native UI thumb
-            bubble.style.left = `calc(${newVal}% + (${-56 - newVal * 0.33}px))`;
-        }
-
-        function adjust(range, bubble, type) {
-            if (type === "add" && range.value < 1000000) {
-                var followers = ++range.value;
-            } else if (type === "minus" && range.value > 100) {
-                var followers = --range.value;
-            } else {
-                var followers = range.value;
-            }
-
+            var followers = range;
             var min = range.min ? range.min : 100;
             var max = range.max ? range.max : 1000000;
             var newVal = Number(((followers - min) * 100) / (max - min));
@@ -279,7 +235,6 @@
             bubble.style.left = `calc(${newVal}% + (${-56 - newVal * 0.33}px))`;
 
         }
-
 
     </script>
 </body>
